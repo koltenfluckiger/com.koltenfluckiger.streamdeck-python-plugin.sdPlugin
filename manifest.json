@@ -1,0 +1,41 @@
+{
+  "Actions": [
+    {
+      "Icon": "",
+      "Name": "Execute Script",
+      "States": [
+        {
+          "Image": "actionDefaultImage",
+          "TitleAlignment": "middle",
+          "FontSize": "16"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "",
+      "UUID": "com.koltenfluckiger.executescript.action1"
+    }
+  ],
+  "SDKVersion": 2,
+  "Author": "koltenfluckiger",
+  "CodePath": "plugin/index.html",
+  "PropertyInspectorPath": "pi/index.html",
+  "Description": "Execute Python Scripts in the background",
+  "Name": "streamdeck-python-plugin",
+  "Icon": "pluginIcon",
+  "URL": "https://github.com/koltenfluckiger/streamdeck-python-plugin",
+  "Version": "1.2",
+  "OS": [
+    {
+        "Platform": "mac",
+        "MinimumVersion" : "10.11"
+    },
+    {
+        "Platform": "windows",
+        "MinimumVersion" : "10"
+    }
+  ],
+  "Software":
+    {
+        "MinimumVersion" : "4.1"
+    }
+}
