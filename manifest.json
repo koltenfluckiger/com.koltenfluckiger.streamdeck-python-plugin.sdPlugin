@@ -1,11 +1,11 @@
 {
   "Actions": [
     {
-      "Icon": "",
+      "Icon": "images/plugin",
       "Name": "Execute Script",
       "States": [
         {
-          "Image": "actionDefaultImage",
+          "Image": "images/plugin",
           "TitleAlignment": "middle",
           "FontSize": "16"
         }
@@ -22,7 +22,8 @@
   "PropertyInspectorPath": "pi/index.html",
   "Description": "Execute Python Scripts in the background",
   "Name": "streamdeck-python-plugin",
-  "Icon": "pluginIcon",
+  "Icon": "images/plugin",
+  "CatagoryIcon": "images/plugin",
   "URL": "https://github.com/koltenfluckiger/streamdeck-python-plugin",
   "Version": "1.2",
   "OS": [
