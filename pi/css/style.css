@@ -252,9 +252,15 @@ option {
 
 .sdpi-wrapper {
   overflow-x: hidden;
-  height: 100%;
+  /* height: 100%; */
+  display: flex;
+flex-direction: column;
+margin: 15px;
 }
-
+}
+.sdpi-wrapper > div{
+  padding: 10px;
+}
 .sdpi-item {
   display: flex;
   flex-direction: row;
@@ -264,11 +270,19 @@ option {
   max-width: 344px;
   -webkit-user-drag: none;
 }
-
+.sdpi-item-group {
+      display: inline-flex;
+      align-items: center;
+}
+.sdpi-file-info-group {
+    padding: 10px 0px;
+}
 .sdpi-item:first-child {
   margin-top:-1px;
 }
-
+.spdi-item-info-label {
+      width: 100%
+}
 .sdpi-item:last-child {
   margin-bottom: 0px;
 }
@@ -343,7 +357,6 @@ table > caption {
 }
 
 .sdpi-item-label {
-  text-align: right;
   flex: none;
   width: 94px;
   padding-right: 4px;
@@ -1228,14 +1241,11 @@ input:required:valid {
   overflow-wrap: break-word;
   word-wrap: break-word;
   hyphens: auto;
-
+  width: 100%;
   min-width: 132px;
-  max-width: 144px;
   max-height: 32px;
   margin-top: 0px;
-  margin-left: 5px;
   display: inline-block;
-  overflow: hidden;
   padding: 6px 4px;
   background-color: var(--sdpi-background);
 }

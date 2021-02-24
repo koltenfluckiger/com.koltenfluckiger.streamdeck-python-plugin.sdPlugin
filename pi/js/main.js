@@ -1,77 +1,55 @@
 //==============================================================================
 /**
 @file       main.js
-@brief      Philips Hue Plugin
-@copyright  (c) 2019, Corsair Memory, Inc.
-            This source code is licensed under the MIT-style license found in the LICENSE file.
+@brief      Kolten Fluckiger
 **/
 //==============================================================================
 
-// Global web socket
 var websocket = null;
-var inPropertyInspectorUUID = null;
-var inRegisterEvent = null;
-var inInfo = null;
-var inActionInfo = null;
+var UUID = null;
+var context = null;
 var cache = {};
-var globalSettings = {};
-var settings = {};
 
-// Setup the websocket and handle communication
-function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegisterEvent, inInfo, inActionInfo) {
+function connectElgatoStreamDeckSocket(port, pluginUUID, registerEvent, inInfo, inActionInfo) {
 
-  var actions = {};
   var actionInfo = JSON.parse(inActionInfo);
   var info = JSON.parse(inInfo);
+  var action = actionInfo['action']
 
-  inPropertyInspectorUUID = inPropertyInspectorUUID;
-  inRegisterEvent = inRegisterEvent;
-  inInfo = inInfo;
+  UUID = pluginUUID;
 
-  settings = actionInfo['payload']['settings'];
-
-  websocket = new WebSocket('ws://127.0.0.1:' + inPort);
+  websocket = new WebSocket('ws://127.0.0.1:' + port);
   websocket.onopen = function() {
-    // WebSocket is connected, register the plugin
-    var json = {
-      "event": inRegisterEvent,
-      "uuid": inPropertyInspectorUUID
-    };
-
-    websocket.send(JSON.stringify(json));
+    registerWebsocket(registerEvent, UUID);
+    requestSettings(UUID)
   };
 
-  // Web socked received a message
   websocket.onmessage = function(evt) {
 
     const obj = JSON.parse(evt.data);
     const event = obj['event'];
-    const action = obj['action'];
-    const context = obj['context'];
     const payload = obj['payload'];
 
+    if (event === 'didReceiveSettings') {
+      try {
+        const settings = payload.settings;
 
-    if(event === 'sendToPropertyInspector'){
-      const fileLocation = document.getElementById('file_location');
-      const arguments = document.getElementById('arguments');
-      fileLocation.value = payload.fileLocation;
-      arguments.value = payload.arguments;
+        const filelocation = document.getElementById('filelocation');
+        const arguments = document.getElementById('arguments');
+        const returnflag = document.getElementById('returnflag');
+
+        filelocation.value = settings.filelocation;
+        filelocation.textContent = settings.filelocation;
+        arguments.value = settings.arguments;
+        returnflag.checked = settings.returnflag;
+
+      } catch (err) {
+        console.log(err)
+      }
     }
   };
 
   this.updateSettings = function() {
-    const fileLocation = document.getElementById('dummy_file_location').value;
-    const arguments = document.getElementById('arguments').value;
-    console.log(fileLocation);
-    const json = {
-      "action": inActionInfo['action'],
-      "event": "setSettings",
-      "context": inPropertyInspectorUUID,
-      "payload": {
-        "fileLocation": fileLocation,
-        "arguments": arguments
-      }
-    }
-    websocket.send(JSON.stringify(json));
+    saveSettings(UUID);
   }
 }

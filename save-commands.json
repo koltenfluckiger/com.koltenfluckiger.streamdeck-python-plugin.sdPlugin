@@ -1,5 +1,0 @@
-      {
-	"commands": [
-		"**/** : powershell.exe -File C:\\Users\\kfluckiger\\scripts\\executebash.ps1 -scriptpath /home/kfluckiger/scripts/bash/cpstreamdeckpluginstopluginfolder.sh"
-	]
-}
