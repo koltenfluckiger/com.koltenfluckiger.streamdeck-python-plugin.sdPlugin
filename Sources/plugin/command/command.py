@@ -14,8 +14,8 @@ class Command:
             stdout, stderr = await process.communicate()
             output = stdout.decode().strip()
             code = process.returncode
-            logging.critical("Output: {}".format(output))
-            logging.critical("Error Code: {}".format(code))
+            logging.info("Output: {}".format(output))
+            logging.info("Error Code: {}".format(code))
             if self.return_flag:
                 return {"output": output, "code": code}
             else:
