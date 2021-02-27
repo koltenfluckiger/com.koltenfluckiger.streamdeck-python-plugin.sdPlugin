@@ -12,10 +12,22 @@ class CacheManager(object):
             else:
                 return None
         except Exception as err:
-            print(err)
+            logging.critical(err)
 
     def _init_cache(self, uuid):
         try:
             self.cache[uuid] = {}
         except Exception as err:
-            print(err)
+            logging.critical(err)
+
+    def _add_to_cache(self, uuid, key, value):
+        try:
+            self.cache[uuid][key] = value
+        except Exception as err:
+            logging.critical(err)
+
+    def _remove_from_cache(self, uuid, key):
+        try:
+            del self.cache[uuid][key]
+        except Exception as err:
+            logging.critical(err)
