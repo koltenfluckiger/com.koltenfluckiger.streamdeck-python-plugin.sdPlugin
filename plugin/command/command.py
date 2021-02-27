@@ -7,13 +7,15 @@ class Command:
     def __init__(self, command, return_flag):
         self.command = command
         self.return_flag = return_flag
-    
+
     async def execute(self):
         try:
             process = await asyncio.create_subprocess_shell(self.command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
             stdout, stderr = await process.communicate()
             output = stdout.decode().strip()
             code = process.returncode
+            logging.critical("Output: {}".format(output))
+            logging.critical("Error Code: {}".format(code))
             if self.return_flag:
                 return {"output": output, "code": code}
             else:

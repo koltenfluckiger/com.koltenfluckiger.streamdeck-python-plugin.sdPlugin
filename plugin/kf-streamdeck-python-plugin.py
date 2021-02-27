@@ -40,7 +40,6 @@ class Plugin(object):
             await self._register_websocket()
             await self.on_message()
         except Exception as err:
-            print(err)
             logging.critical(err)
 
     async def _init_websocket(self):
@@ -120,8 +119,6 @@ class Plugin(object):
 
                 if event == 'keyDown':
                     command = self.generate_command(payload)
-                    logging.critical(command.execute)
-                    logging.critical(command.command)
                     await self.process_manager.enqueue(command)
                     result = await self.process_manager.process()
                     await self.process_result(result)

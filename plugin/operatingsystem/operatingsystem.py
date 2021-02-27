@@ -55,6 +55,6 @@ class OSManager(object):
             path = self.convert_path(path)
             full_path = self.convert_path(
                 '{} {}'.format(self.binary_path, path))
-            return '{} "{}"'.format(full_path, args)
+            return '{} {}'.format(full_path, args)
         except Exception as err:
             logging.critical('ERROR AT generate_exec_path: {}'.format(err))
