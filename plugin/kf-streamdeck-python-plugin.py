@@ -5,34 +5,38 @@ import re
 import json
 import websockets
 
+from logging.handlers import RotatingFileHandler
+
 from process import ProcessManager
 from operatingsystem import OSManager
 from cache import CacheManager
 from notifier import Notifier
 from command import Command
 
-logging.basicConfig(filename="debug.log", level=logging.CRITICAL)
-
+logging.basicConfig(
+        handlers=[RotatingFileHandler('debug.log', maxBytes=100000, backupCount=10)],
+        level=logging.DEBUG,
+        format="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
+        datefmt='%Y-%m-%dT%H:%M:%S')
 
 class Plugin(object):
 
-    def __init__(self, port, pluginUUID, registerEvent, info, loop):
+    def __init__(self, port, pluginUUID, registerEvent, info, loop, process_manager, os_manager, cache_manager=CacheManager()):
         self.port = port
         self.pluginUUID = pluginUUID
         self.registerEvent = registerEvent
         self.info = info
         self.loop = loop
-        self.process_manager = ProcessManager()
-        self.cache_manager = CacheManager()
-        self.os_manager = OSManager()
-        self.notifier = Notifier(self.os_manager._get_current_os())
+        self.process_manager = process_manager
+        self.cache_manager = cache_manager
+        self.os_manager = os_manager
 
     def __del__(self):
         try:
             self.websocket.close()
             self.loop.close()
         except Exception as err:
-            print(err)
+            logging.critical(err)
 
     async def listen(self):
         try:
@@ -56,14 +60,9 @@ class Plugin(object):
                 "event": self.registerEvent,
                 "uuid": self.pluginUUID
             }
-            settings = {
-                'event': 'getGlobalSettings',
-                'context': self.pluginUUID
-            }
 
-            logging.critical("Registering websocket")
+            logging.info("Registering websocket...")
             await self.websocket.send(json.dumps(data))
-            await self.websocket.send(json.dumps(settings))
             return
         except Exception as err:
             logging.critical(err)
@@ -77,21 +76,8 @@ class Plugin(object):
 
     async def send_message(self, event):
         try:
-            logging.critical("Sending event {}".format(event))
+            logging.info("Sending event: {}".format(event))
             await self.websocket.send(event)
-        except Exception as err:
-            logging.critical(err)
-
-    async def process_result(self, result):
-        try:
-            if result:
-                output = result['output']
-                code = result['code']
-                self.notifier.notify(title="STREAMDECK PYTHON PLUGIN EXIT CODE: {}".format(
-                    code), message="Received output of process:\n\n {}".format(output))
-                return
-            else:
-                return
         except Exception as err:
             logging.critical(err)
 
@@ -102,13 +88,13 @@ class Plugin(object):
             return_flag = data['settings']['returnflag']
             command = self.os_manager.generate_exec_path(
                 file_location, arguments)
-            c = Command(command, return_flag)
-            return c
+            new_command = Command(command, return_flag)
+            return new_command
         except Exception as err:
             logging.critical(err)
 
     async def process_data(self, data):
-        logging.critical("Processing data: {}".format(data))
+        logging.info("Processing data: {}".format(data))
         try:
             if 'payload' in data:
 
@@ -120,8 +106,6 @@ class Plugin(object):
                 if event == 'keyDown':
                     command = self.generate_command(payload)
                     await self.process_manager.enqueue(command)
-                    result = await self.process_manager.process()
-                    await self.process_result(result)
                     return
 
         except Exception as err:
@@ -140,7 +124,7 @@ def parse_args(sys_args):
                 flag = reg.search(sys.argv[x]).group(1)
                 value = sys.argv[y]
                 args[flag] = value
-                logging.critical("Flag: {}, Value: {}".format(flag, value))
+                logging.info("Flag: {}, Value: {}".format(flag, value))
         except Exception as err:
             logging.critical(err)
     return args
@@ -150,12 +134,24 @@ def main():
     try:
         args = parse_args(sys.argv)
         loop = asyncio.get_event_loop()
+
+        os_manager = OSManager()
+        os_type = os_manager._get_current_os()
+        notifier = Notifier(os_type)
+        process_manager = ProcessManager(notifier)
+
         plugin = Plugin(port=args['port'], pluginUUID=args['pluginUUID'],
-                        registerEvent=args['registerEvent'], info=args['info'], loop=loop)
-        loop.run_until_complete(plugin.listen())
+                        registerEvent=args['registerEvent'], info=args['info'], loop=loop, process_manager=process_manager, os_manager=os_manager)
+
+        loop.run_until_complete(asyncio.gather(
+            plugin.listen(), process_manager.process()))
         loop.run_forever()
+        loop.stop()
+        loop.close()
     except Exception as err:
         logging.critical(err)
+        loop.stop()
+        loop.close()
 
 
 if __name__ == '__main__':
