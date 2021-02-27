@@ -5,13 +5,19 @@ import re
 import json
 import websockets
 
+from logging.handlers import RotatingFileHandler
+
 from process import ProcessManager
 from operatingsystem import OSManager
 from cache import CacheManager
 from notifier import Notifier
 from command import Command
 
-logging.basicConfig(filename="debug.log", level=logging.CRITICAL)
+logging.basicConfig(
+        handlers=[RotatingFileHandler('debug.log', maxBytes=100000, backupCount=10)],
+        level=logging.DEBUG,
+        format="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
+        datefmt='%Y-%m-%dT%H:%M:%S')
 
 class Plugin(object):
 
