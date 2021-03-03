@@ -10,7 +10,8 @@ class Command:
 
     async def execute(self):
         try:
-            process = await asyncio.create_subprocess_shell(self.command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+            DETACHED_PROCESS = 0x00000008
+            process = await asyncio.create_subprocess_shell(self.command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, creationflags=DETACHED_PROCESS)
             stdout, stderr = await process.communicate()
             output = stdout.decode().strip()
             code = process.returncode
