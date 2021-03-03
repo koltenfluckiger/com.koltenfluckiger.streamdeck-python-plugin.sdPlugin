@@ -2,7 +2,7 @@
   "Actions": [
     {
       "Icon": "images/plugin",
-      "Name": "Execute Script",
+      "Name": "Execute Python File",
       "States": [
         {
           "Image": "images/plugin",
@@ -16,15 +16,16 @@
     }
   ],
   "SDKVersion": 2,
-  "Author": "koltenfluckiger",
+  "Author": "Kolten Fluckiger",
   "CodePathWin": "plugin/binaries/koltenfluckiger.streamdeck-python-plugin.exe",
   "CodePathMac": "plugin/binaries/koltenfluckiger.streamdeck-python-plugin",
   "PropertyInspectorPath": "pi/index.html",
   "Description": "Execute Python Scripts in the background",
   "Name": "streamdeck-python-plugin",
   "Icon": "images/plugin",
+  "Category": "Python Plugin",
   "CatagoryIcon": "images/plugin",
-  "URL": "https://github.com/koltenfluckiger/streamdeck-python-plugin",
+  "URL": "https://github.com/koltenfluckiger/com.koltenfluckiger.streamdeck-python-plugin.sdPlugin",
   "Version": "1.2",
   "OS": [
     {
