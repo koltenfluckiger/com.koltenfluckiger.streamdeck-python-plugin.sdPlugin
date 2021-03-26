@@ -1,9 +1,12 @@
 import platform
 import logging
 import sys
-from pathlib import PurePosixPath, PureWindowsPath
+import shutil
+import subprocess
+from pathlib import PurePosixPath, PureWindowsPath, Path
 from enum import Enum
 
+logger = logging.getLogger()
 
 class OSTYPE(Enum):
 
@@ -27,34 +30,36 @@ class OSManager(object):
                 self.OSTYPE = OSTYPE.UNIX
                 self.binary_path = PurePosixPath('/usr/bin/env python')
         except Exception as err:
-            logging.critical('ERROR AT _setup: {}'.format(err))
+            logger.critical('ERROR AT _setup: {}'.format(err))
 
     def _get_current_os(self):
         try:
             return self.OSTYPE
         except Exception as err:
-            logging.critical(err)
+            logger.critical(err)
 
     def _get_current_binary_path(self):
         try:
             return self.binary_path
         except Exception as err:
-            logging.critical(err)
+            logger.critical(err)
 
     def convert_path(self, path):
         try:
             if self.OSTYPE == OSTYPE.WINDOWS:
-                return PureWindowsPath(path)
+                return PureWindowsPath(Path(r"{}".format(path)).resolve())
             else:
                 return PurePosixPath(path)
         except Exception as err:
-            logging.critical('ERROR AT convert_path: {}'.format(err))
+            logger.critical('ERROR AT convert_path: {}'.format(err))
 
     def generate_exec_path(self, path, args):
         try:
             path = self.convert_path(path)
-            full_path = self.convert_path(
-                '{} {}'.format(self.binary_path, path))
-            return '{} {}'.format(full_path, args)
+            binary_path = self.convert_path(self.binary_path)
+            full_path = r'{} {}'.format(self.binary_path, path)
+            logger.info("Path: {}".format(path))
+            logger.info("Full path: {}".format(full_path))
+            return r'{} {}'.format(full_path, args)
         except Exception as err:
-            logging.critical('ERROR AT generate_exec_path: {}'.format(err))
+            logger.critical('ERROR AT generate_exec_path: {}'.format(err))

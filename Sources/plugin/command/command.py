@@ -11,7 +11,7 @@ class Command:
     async def execute(self):
         try:
             DETACHED_PROCESS = 0x00000008
-            process = await asyncio.create_subprocess_shell(self.command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, creationflags=DETACHED_PROCESS)
+            process = await asyncio.create_subprocess_shell(r"{}".format(self.command), stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, creationflags=DETACHED_PROCESS)
             stdout, stderr = await process.communicate()
             output = stdout.decode().strip()
             code = process.returncode
@@ -22,4 +22,4 @@ class Command:
             else:
                 return None
         except Exception as err:
-            logging.critical(err)
+            logging.critical("ERROR: {}".format(err))

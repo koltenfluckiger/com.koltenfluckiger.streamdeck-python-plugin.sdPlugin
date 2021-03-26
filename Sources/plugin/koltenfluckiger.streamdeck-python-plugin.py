@@ -89,6 +89,7 @@ class Plugin(object):
             command = self.os_manager.generate_exec_path(
                 file_location, arguments)
             new_command = Command(command, return_flag)
+            logging.critical("Generating Command: {}".format(command))
             return new_command
         except Exception as err:
             logging.critical(err)
