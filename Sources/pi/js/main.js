@@ -40,7 +40,7 @@ function connectElgatoStreamDeckSocket(port, pluginUUID, registerEvent, inInfo, 
 
         filelocation.value = settings.filelocation;
         filelocation.textContent = settings.filelocation;
-        arguments.value = settings.arguments;
+        arguments.value = settings.arguments ? settings.arguments : "";
         returnflag.checked = settings.returnflag;
 
       } catch (err) {
