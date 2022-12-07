@@ -1,31 +1,20 @@
+import sys
+import asyncio
 import logging
+import re
+import json
+import websockets
+
 from logging.handlers import RotatingFileHandler
-logging.basicConfig(
-        handlers=[RotatingFileHandler('debug.log', maxBytes=1000000, backupCount=5)],
-        level=logging.DEBUG,
-        format="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
-        datefmt='%Y-%m-%dT%H:%M:%S')
 
-try:
-    import sys
-    import asyncio
-    import re
-    import json
-    from websockets.client import connect
-    import websockets
-
-    from process import ProcessManager
-    from operatingsystem import OSManager
-    from cache import CacheManager
-    from notifier import Notifier
-    from command import Command
-except Exception as err:
-    logging.critical(err)
-
-
+from process import ProcessManager
+from operatingsystem import OSManager
+from cache import CacheManager
+from notifier import Notifier
+from command import Command
 
 logging.basicConfig(
-        handlers=[RotatingFileHandler('debug.log', maxBytes=1000000, backupCount=5)],
+        handlers=[RotatingFileHandler('debug.log', maxBytes=100000, backupCount=10)],
         level=logging.DEBUG,
         format="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
         datefmt='%Y-%m-%dT%H:%M:%S')
@@ -60,7 +49,7 @@ class Plugin(object):
     async def _init_websocket(self):
         uri = "ws://localhost:{}".format(self.port)
         try:
-            self.websocket = await connect(uri)
+            self.websocket = await websockets.client.connect(uri)
             return
         except Exception as err:
             logging.critical(err)

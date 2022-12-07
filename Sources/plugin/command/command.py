@@ -23,4 +23,3 @@ class Command:
                 return None
         except Exception as err:
             logging.critical("ERROR: {}".format(err))
-            return None

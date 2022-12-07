@@ -20,7 +20,6 @@ class ProcessManager():
                 command = await self.queue.get()
                 result = await command.execute()
                 self.queue.task_done()
-                logging.critical(r"OUTPUT: {}".format(result))
                 if result:
                     output = result['output']
                     code = result['code']

@@ -1,6 +1,7 @@
-import logging
 try:
+    from operatingsystem import OSTYPE
     import platform
+    import logging
     if 'windows' in platform.system().lower():
         from plyer.platforms.win.notification import instance as WinInstance
     elif 'linux' in platform.system().lower():
@@ -9,6 +10,7 @@ try:
         from plyer.platforms.macosx.notification import instance as OSXInstance
 except ImportError as err:
     logging.critical("Import error: {}".format(err))
+
 
 class Notifier():
 

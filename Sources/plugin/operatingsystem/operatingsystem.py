@@ -46,7 +46,10 @@ class OSManager(object):
 
     def convert_path(self, path):
         try:
-            return Path(r"{}".format(path)).resolve()
+            if self.OSTYPE == OSTYPE.WINDOWS:
+                return PureWindowsPath(Path(r"{}".format(path)).resolve())
+            else:
+                return PurePosixPath(path)
         except Exception as err:
             logger.critical('ERROR AT convert_path: {}'.format(err))
 
