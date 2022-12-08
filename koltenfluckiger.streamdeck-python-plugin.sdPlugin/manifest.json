@@ -1,0 +1,47 @@
+{
+  "Actions": [
+    {
+      "Icon": "images/plugin",
+      "Name": "Execute Python File",
+      "States": [
+        {
+          "Image": "images/plugin",
+          "TitleAlignment": "middle",
+          "FontSize": "16"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Execute a Python File",
+      "UUID": "com.koltenfluckiger.streamdeck-python-plugin.executescript.action1"
+    }
+  ],
+  "SDKVersion": 2,
+  "Author": "Kolten Fluckiger",
+  "CodePath": "koltenfluckiger.streamdeck-python-plugin.exe",
+  "CodePathMac": "koltenfluckiger.streamdeck-python-plugin",
+  "PropertyInspectorPath": "pi/index.html",
+  "Description": "Execute Python Scripts in the background",
+  "Name": "StreamDeck Python Plugin",
+  "Category": "Python",
+  "CategoryIcon": "images/plugin",
+  "Icon": "images/plugin",
+  "URL": "https://www.elgato.com/gaming/stream-deck",
+  "Version": "1.2.0",
+  "DefaultWindowSize": [
+    500,
+    650
+  ],
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.11"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Software": {
+    "MinimumVersion": "5.0"
+  }
+}
