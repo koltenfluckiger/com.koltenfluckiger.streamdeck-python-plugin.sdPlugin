@@ -23,23 +23,16 @@ except Exception as err:
     logging.critical(err)
 
 
-
-logging.basicConfig(
-        handlers=[RotatingFileHandler('debug.log', maxBytes=1000000, backupCount=5)],
-        level=logging.DEBUG,
-        format="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
-        datefmt='%Y-%m-%dT%H:%M:%S')
-
 class Plugin(object):
 
-    def __init__(self, port, pluginUUID, registerEvent, info, loop, process_manager, os_manager, cache_manager=CacheManager()):
+    def __init__(self, port, pluginUUID, registerEvent, info, loop, process_manager, os_manager, cache_manager=None):
         self.port = port
         self.pluginUUID = pluginUUID
         self.registerEvent = registerEvent
         self.info = info
         self.loop = loop
         self.process_manager = process_manager
-        self.cache_manager = cache_manager
+        self.cache_manager = cache_manager if cache_manager is not None else CacheManager()
         self.os_manager = os_manager
 
     def __del__(self):
@@ -58,7 +51,7 @@ class Plugin(object):
             logging.critical(err)
 
     async def _init_websocket(self):
-        uri = "ws://localhost:{}".format(self.port)
+        uri = f"ws://localhost:{self.port}"
         try:
             self.websocket = await connect(uri)
             return
@@ -87,7 +80,7 @@ class Plugin(object):
 
     async def send_message(self, event):
         try:
-            logging.info("Sending event: {}".format(event))
+            logging.info(f"Sending event: {event}")
             await self.websocket.send(event)
         except Exception as err:
             logging.critical(err)
@@ -100,18 +93,16 @@ class Plugin(object):
             command = self.os_manager.generate_exec_path(
                 file_location, arguments)
             new_command = Command(command, return_flag)
-            logging.critical("Generating Command: {}".format(command))
+            logging.info(f"Generating Command: {command}")
             return new_command
         except Exception as err:
             logging.critical(err)
 
     async def process_data(self, data):
-        logging.info("Processing data: {}".format(data))
+        logging.debug(f"Processing data: {data}")
         try:
             if 'payload' in data:
 
-                action = data['action']
-                context = data['context']
                 event = data['event']
                 payload = data['payload']
 
@@ -136,7 +127,7 @@ def parse_args(sys_args):
                 flag = reg.search(sys.argv[x]).group(1)
                 value = sys.argv[y]
                 args[flag] = value
-                logging.info("Flag: {}, Value: {}".format(flag, value))
+                logging.info(f"Flag: {flag}, Value: {value}")
         except Exception as err:
             logging.critical(err)
     return args

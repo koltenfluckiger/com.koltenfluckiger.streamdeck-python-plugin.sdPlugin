@@ -1,8 +1,5 @@
 import platform
 import logging
-import sys
-import shutil
-import subprocess
 from pathlib import PurePosixPath, PureWindowsPath, Path
 from enum import Enum
 
@@ -26,11 +23,14 @@ class OSManager(object):
             if 'windows' in os_type:
                 self.OSTYPE = OSTYPE.WINDOWS
                 self.binary_path = PureWindowsPath("pythonw.exe")
+            elif 'darwin' in os_type:
+                self.OSTYPE = OSTYPE.MACOS
+                self.binary_path = PurePosixPath('/usr/bin/env python')
             else:
                 self.OSTYPE = OSTYPE.UNIX
                 self.binary_path = PurePosixPath('/usr/bin/env python')
         except Exception as err:
-            logger.critical('ERROR AT _setup: {}'.format(err))
+            logger.critical(f'ERROR AT _setup: {err}')
 
     def _get_current_os(self):
         try:
@@ -46,17 +46,16 @@ class OSManager(object):
 
     def convert_path(self, path):
         try:
-            return Path(r"{}".format(path)).resolve()
+            return Path(rf"{path}").resolve()
         except Exception as err:
-            logger.critical('ERROR AT convert_path: {}'.format(err))
+            logger.critical(f'ERROR AT convert_path: {err}')
 
     def generate_exec_path(self, path, args):
         try:
             path = self.convert_path(path)
-            binary_path = self.convert_path(self.binary_path)
-            full_path = r'{} {}'.format(self.binary_path, path)
-            logger.info("Path: {}".format(path))
-            logger.info("Full path: {}".format(full_path))
-            return r'{} {}'.format(full_path, args)
+            logger.info(f"Path: {path}")
+            full_command = f"{self.binary_path} {path} {args}"
+            logger.info(f"Full command: {full_command}")
+            return full_command
         except Exception as err:
-            logger.critical('ERROR AT generate_exec_path: {}'.format(err))
+            logger.critical(f'ERROR AT generate_exec_path: {err}')
